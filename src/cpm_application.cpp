@@ -230,7 +230,7 @@ namespace v2x {
   void CpmApplication::setAllObjectsOfPersonsAnimalsToSend(const autoware_auto_perception_msgs::msg::PredictedObjects::ConstSharedPtr msg) {
     if (msg->objects.size() > 0) {
       for (autoware_auto_perception_msgs::msg::PredictedObject obj : msg->objects) {
-        std::string object_uuid = uuidToHexString(obj.object_id);
+        std::string object_uuid = uuidToHexString(obj.uuid);
         auto found_object = std::find_if(objectsList.begin(), objectsList.end(), [&](auto const &e) {
           return !strcmp(e.uuid.c_str(), object_uuid.c_str());
         });
@@ -263,8 +263,8 @@ namespace v2x {
         double existence_probability = obj.existence_probability;
         // RCLCPP_INFO(node_->get_logger(), "existence_probability: %f", existence_probability);
 
-        std::string object_uuid = uuidToHexString(obj.object_id);
-        // RCLCPP_INFO(node_->get_logger(), "received object_id: %s", object_uuid.c_str());
+        std::string object_uuid = uuidToHexString(obj.uuid);
+        // RCLCPP_INFO(node_->get_logger(), "received uuid: %s", object_uuid.c_str());
 
         // RCLCPP_INFO(node_->get_logger(), "ObjectsList count: %d", objectsList.size());
 
@@ -288,16 +288,19 @@ namespace v2x {
             object.objectID = cpm_object_id_;
             object.uuid = object_uuid;
             object.timestamp_ros = msg->header.stamp;
-            object.position_x = obj.kinematics.initial_pose_with_covariance.pose.position.x;
-            object.position_y = obj.kinematics.initial_pose_with_covariance.pose.position.y;
-            object.position_z = obj.kinematics.initial_pose_with_covariance.pose.position.z;
-            object.orientation_x = obj.kinematics.initial_pose_with_covariance.pose.orientation.x;
-            object.orientation_y = obj.kinematics.initial_pose_with_covariance.pose.orientation.y;
-            object.orientation_z = obj.kinematics.initial_pose_with_covariance.pose.orientation.z;
-            object.orientation_w = obj.kinematics.initial_pose_with_covariance.pose.orientation.w;
-            object.shape_x = std::lround(obj.shape.dimensions.x * 10.0);
-            object.shape_y = std::lround(obj.shape.dimensions.y * 10.0);
-            object.shape_z = std::lround(obj.shape.dimensions.z * 10.0);
+            object.position_x = 0;//obj.kinematics.initial_pose_with_covariance.pose.position.x;
+            object.position_y = 0;//obj.kinematics.initial_pose_with_covariance.pose.position.y;
+            object.position_z = 0;//obj.kinematics.initial_pose_with_covariance.pose.position.z;
+            object.orientation_x = 0;//obj.kinematics.initial_pose_with_covariance.pose.orientation.x;
+            object.orientation_y = 0;//obj.kinematics.initial_pose_with_covariance.pose.orientation.y;
+            object.orientation_z = 0;//obj.kinematics.initial_pose_with_covariance.pose.orientation.z;
+            object.orientation_w = 0;//obj.kinematics.initial_pose_with_covariance.pose.orientation.w;
+//            object.shape_x = std::lround(obj.shape.dimensions.x * 10.0);
+//            object.shape_y = std::lround(obj.shape.dimensions.y * 10.0);
+//            object.shape_z = std::lround(obj.shape.dimensions.z * 10.0);
+            object.shape_x = 0;//std::lround(obj.shape.dimensions.x * 10.0);
+            object.shape_y = 0;//std::lround(obj.shape.dimensions.y * 10.0);
+            object.shape_z = 0;//std::lround(obj.shape.dimensions.z * 10.0);
 
             long long msg_timestamp_sec = msg->header.stamp.sec;
             long long msg_timestamp_nsec = msg->header.stamp.nanosec;
@@ -321,7 +324,8 @@ namespace v2x {
             // Object was already in internal memory
 
             // Object belongs to class person or animal
-            if (obj.classification.front().label == autoware_auto_perception_msgs::msg::ObjectClassification::PEDESTRIAN || obj.classification.front().label == autoware_auto_perception_msgs::msg::ObjectClassification::UNKNOWN) {
+            //obj.classification.front().label
+            if (0 == autoware_auto_perception_msgs::msg::ObjectClassification::PEDESTRIAN || 0 == autoware_auto_perception_msgs::msg::ObjectClassification::UNKNOWN) {
 
               if (include_all_persons_and_animals_) {
                 found_object->to_send = true;
@@ -342,7 +346,7 @@ namespace v2x {
               // Object does not belong to class person or animal
 
               // Euclidean absolute distance has changed by more than 4m
-              double dist = pow(obj.kinematics.initial_pose_with_covariance.pose.position.x - found_object->position_x, 2) + pow(obj.kinematics.initial_pose_with_covariance.pose.position.y - found_object->position_y, 2);
+              double dist = 0;//pow(obj.kinematics.initial_pose_with_covariance.pose.position.x - found_object->position_x, 2) + pow(obj.kinematics.initial_pose_with_covariance.pose.position.y - found_object->position_y, 2);
               dist = sqrt(dist);
               // RCLCPP_INFO(node_->get_logger(), "Distance changed: %f", dist);
               if (dist > 4) {
@@ -353,7 +357,7 @@ namespace v2x {
               }
 
               // Absolute speed changed by more than 0.5 m/s
-              double speed = pow(obj.kinematics.initial_twist_with_covariance.twist.linear.x - found_object->twist_linear_x, 2) + pow(obj.kinematics.initial_twist_with_covariance.twist.linear.x- found_object->twist_linear_y, 2);
+              double speed = 0;//pow(obj.kinematics.initial_twist_with_covariance.twist.linear.x - found_object->twist_linear_x, 2) + pow(obj.kinematics.initial_twist_with_covariance.twist.linear.x- found_object->twist_linear_y, 2);
               speed = sqrt(speed);
               // RCLCPP_INFO(node_->get_logger(), "Speed changed: %f", dist);
               if (speed > 0.5) {
@@ -362,8 +366,8 @@ namespace v2x {
               } 
 
               // Orientation of speed vector changed by more than 4 degrees
-              double twist_angular_x_diff = (obj.kinematics.initial_twist_with_covariance.twist.angular.x - found_object->twist_angular_x) * 180 / M_PI;
-              double twist_angular_y_diff = (obj.kinematics.initial_twist_with_covariance.twist.angular.y - found_object->twist_angular_y) * 180 / M_PI;
+              double twist_angular_x_diff = 0;//(obj.kinematics.initial_twist_with_covariance.twist.angular.x - found_object->twist_angular_x) * 180 / M_PI;
+              double twist_angular_y_diff = 0;//(obj.kinematics.initial_twist_with_covariance.twist.angular.y - found_object->twist_angular_y) * 180 / M_PI;
               // RCLCPP_INFO(node_->get_logger(), "Orientation speed vector changed x: %f", twist_angular_x_diff);
               // RCLCPP_INFO(node_->get_logger(), "Orientation speed vector changed y: %f", twist_angular_y_diff);
               if( twist_angular_x_diff > 4 || twist_angular_y_diff > 4 ) {
@@ -383,16 +387,20 @@ namespace v2x {
 
             // Update found_object
             found_object->timestamp_ros = msg->header.stamp;
-            found_object->position_x = obj.kinematics.initial_pose_with_covariance.pose.position.x;
-            found_object->position_y = obj.kinematics.initial_pose_with_covariance.pose.position.y;
-            found_object->position_z = obj.kinematics.initial_pose_with_covariance.pose.position.z;
-            found_object->orientation_x = obj.kinematics.initial_pose_with_covariance.pose.orientation.x;
-            found_object->orientation_y = obj.kinematics.initial_pose_with_covariance.pose.orientation.y;
-            found_object->orientation_z = obj.kinematics.initial_pose_with_covariance.pose.orientation.z;
-            found_object->orientation_w = obj.kinematics.initial_pose_with_covariance.pose.orientation.w;
-            found_object->shape_x = std::lround(obj.shape.dimensions.x * 10.0);
-            found_object->shape_y = std::lround(obj.shape.dimensions.y * 10.0);
-            found_object->shape_z = std::lround(obj.shape.dimensions.z * 10.0);
+            found_object->position_x = 0;//obj.kinematics.initial_pose_with_covariance.pose.position.x;
+            found_object->position_y = 0;//obj.kinematics.initial_pose_with_covariance.pose.position.y;
+            found_object->position_z = 0;//obj.kinematics.initial_pose_with_covariance.pose.position.z;
+            found_object->orientation_x = 0;//obj.kinematics.initial_pose_with_covariance.pose.orientation.x;
+            found_object->orientation_y = 0;//obj.kinematics.initial_pose_with_covariance.pose.orientation.y;
+            found_object->orientation_z = 0;//obj.kinematics.initial_pose_with_covariance.pose.orientation.z;
+            found_object->orientation_w = 0;//obj.kinematics.initial_pose_with_covariance.pose.orientation.w;
+//            found_object->shape_x = std::lround(obj.shape.dimensions.x * 10.0);
+//            found_object->shape_y = std::lround(obj.shape.dimensions.y * 10.0);
+//            found_object->shape_z = std::lround(obj.shape.dimensions.z * 10.0);
+            found_object->shape_x = 0;//std::lround(obj.shape.dimensions.x * 10.0);
+            found_object->shape_y = 0;//std::lround(obj.shape.dimensions.y * 10.0);
+            found_object->shape_z = 0;//std::lround(obj.shape.dimensions.z * 10.0);
+
 
             long long msg_timestamp_sec = msg->header.stamp.sec;
             long long msg_timestamp_nsec = msg->header.stamp.nanosec;

@@ -71,29 +71,29 @@ namespace v2x
     autoware_auto_perception_msgs::msg::Shape shape;
     autoware_auto_perception_msgs::msg::PredictedObjectKinematics kinematics;
 
-    classification.label = autoware_auto_perception_msgs::msg::ObjectClassification::CAR;
+//    classification.label = autoware_auto_perception_msgs::msg::ObjectClassification::CAR;
     classification.probability = 0.99;
 
-    shape.type = autoware_auto_perception_msgs::msg::Shape::BOUNDING_BOX;
-    shape.dimensions.x = 5.0;
-    shape.dimensions.y = 2.0;
-    shape.dimensions.z = 1.7;
+//    shape.type = autoware_auto_perception_msgs::msg::Shape::BOUNDING_BOX;
+//    shape.dimensions.x = 5.0;
+//    shape.dimensions.y = 2.0;
+//    shape.dimensions.z = 1.7;
 
-    kinematics.initial_pose_with_covariance.pose.position.x = x_mgrs;
-    kinematics.initial_pose_with_covariance.pose.position.y = y_mgrs;
-    kinematics.initial_pose_with_covariance.pose.position.z = 0.1;
+//    kinematics.initial_pose_with_covariance.pose.position.x = x_mgrs;
+//    kinematics.initial_pose_with_covariance.pose.position.y = y_mgrs;
+//    kinematics.initial_pose_with_covariance.pose.position.z = 0.1;
 
     tf2::Quaternion quat;
     quat.setRPY(0, 0, orientation);
 
-    kinematics.initial_pose_with_covariance.pose.orientation.x = quat.x();
-    kinematics.initial_pose_with_covariance.pose.orientation.y = quat.y();
-    kinematics.initial_pose_with_covariance.pose.orientation.z = quat.z();
-    kinematics.initial_pose_with_covariance.pose.orientation.w = quat.w();
+//    kinematics.initial_pose_with_covariance.pose.orientation.x = quat.x();
+//    kinematics.initial_pose_with_covariance.pose.orientation.y = quat.y();
+//    kinematics.initial_pose_with_covariance.pose.orientation.z = quat.z();
+//    kinematics.initial_pose_with_covariance.pose.orientation.w = quat.w();
 
     object.classification.emplace_back(classification);
-    object.shape = shape;
-    object.kinematics = kinematics;
+//    object.shape = shape;
+//    object.kinematics = kinematics;
 
     cpm_sender_object_msg.objects.push_back(object);
 
@@ -114,30 +114,30 @@ namespace v2x
       autoware_auto_perception_msgs::msg::Shape shape;
       autoware_auto_perception_msgs::msg::PredictedObjectKinematics kinematics;
 
-      classification.label = autoware_auto_perception_msgs::msg::ObjectClassification::CAR;
-      classification.probability = 0.99;
+//      classification.label = autoware_auto_perception_msgs::msg::ObjectClassification::CAR;
+//      classification.probability = 0.99;
 
-      shape.type = autoware_auto_perception_msgs::msg::Shape::BOUNDING_BOX;
-      shape.dimensions.x = obj.shape_x / 10.0;
-      shape.dimensions.y = obj.shape_y / 10.0;
-      shape.dimensions.z = obj.shape_z / 10.0;
+//      shape.type = autoware_auto_perception_msgs::msg::Shape::BOUNDING_BOX;
+//      shape.dimensions.x = obj.shape_x / 10.0;
+//      shape.dimensions.y = obj.shape_y / 10.0;
+//      shape.dimensions.z = obj.shape_z / 10.0;
 
-      kinematics.initial_pose_with_covariance.pose.position.x = obj.position_x;
-      kinematics.initial_pose_with_covariance.pose.position.y = obj.position_y;
-      kinematics.initial_pose_with_covariance.pose.position.z = 0.1;
+//      kinematics.initial_pose_with_covariance.pose.position.x = obj.position_x;
+//      kinematics.initial_pose_with_covariance.pose.position.y = obj.position_y;
+//      kinematics.initial_pose_with_covariance.pose.position.z = 0.1;
 
-      kinematics.initial_pose_with_covariance.pose.orientation.x = obj.orientation_x;
-      kinematics.initial_pose_with_covariance.pose.orientation.y = obj.orientation_y;
-      kinematics.initial_pose_with_covariance.pose.orientation.z = obj.orientation_z;
-      kinematics.initial_pose_with_covariance.pose.orientation.w = obj.orientation_w;
+//      kinematics.initial_pose_with_covariance.pose.orientation.x = obj.orientation_x;
+//      kinematics.initial_pose_with_covariance.pose.orientation.y = obj.orientation_y;
+//      kinematics.initial_pose_with_covariance.pose.orientation.z = obj.orientation_z;
+//      kinematics.initial_pose_with_covariance.pose.orientation.w = obj.orientation_w;
 
       object.classification.emplace_back(classification);
-      object.shape = shape;
+//      object.shape = shape;
       object.kinematics = kinematics;
 
       std::mt19937 gen(std::random_device{}());
       std::independent_bits_engine<std::mt19937, 8, uint8_t> bit_eng(gen);
-      std::generate(object.object_id.uuid.begin(), object.object_id.uuid.end(), bit_eng);
+//      std::generate(object.object_id.uuid.begin(), object.object_id.uuid.end(), bit_eng);
 
       output_dynamic_object_msg.objects.push_back(object);
     }
